@@ -66,74 +66,90 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = getServiceSupabase();
+    console.log('[cron/sync-data] Sync started at', new Date().toISOString());
     const results = {
       housingPriceIndex: { success: 0, failed: 0 },
       loanRates: { success: 0, failed: 0 },
       inflationRates: { success: 0, failed: 0 },
     };
 
-    // 1. Konut Fiyat Endeksi Verilerini Çek ve Kaydet (Sadece Türkiye Geneli)
-    console.log('Fetching Housing Price Index data...');
-    
-    try {
-      const turkeyCity = MAJOR_CITIES.find(c => c.slug === 'turkiye');
-      if (turkeyCity) {
-        const { startDate, endDate } = getDefaultDateRange();
+    // 1. Konut Fiyat Endeksi – EVDS3 ile tüm şehirler
+    console.log('Fetching Housing Price Index data (EVDS3)...');
+    const { startDate, endDate } = getDefaultDateRange();
+
+    for (let i = 0; i < MAJOR_CITIES.length; i++) {
+      const city = MAJOR_CITIES[i];
+      if (i > 0) await new Promise((r) => setTimeout(r, 1200));
+      try {
+        console.log(`  → ${city.name} (${city.evdsCode})...`);
         const data = await evdsApi.fetchHousingPriceIndex({
-          seriesCode: turkeyCity.evdsCode,
+          seriesCode: city.evdsCode,
           startDate,
           endDate,
         });
 
-        if (data.length > 0) {
-          console.log(`Fetched ${data.length} data points for Turkey`);
-          
-          // Her veri noktası için kayıt yap
-          let successCount = 0;
-          let errorCount = 0;
-          
-          for (const point of data) {
-            // TCMB API yanıtında noktalar alt çizgiye dönüşüyor: TP.HKFE01 -> TP_HKFE01
-            const seriesKey = turkeyCity.evdsCode.replace(/\./g, '_');
-            const indexValue = parseFloat(point[seriesKey] || '0');
-            
-            if (indexValue > 0) {
-              const sqlDate = convertTCMBDateToSQL(point.Tarih);
-              const { data: insertedData, error } = await supabase
-                .from('housing_price_index')
-                .upsert({
-                  date: sqlDate,
-                  city_id: null,
-                  district_id: null,
-                  location_type: 'country',
-                  index_value: indexValue,
-                }, {
-                  onConflict: 'date,city_id,district_id,location_type',
-                })
-                .select();
-              
-              if (error) {
-                console.error(`❌ Error inserting ${point.Tarih} (${sqlDate}):`, error.message, error.details);
-                errorCount++;
-              } else {
-                successCount++;
-                if (successCount <= 3 || successCount === data.length) {
-                  console.log(`✓ Inserted ${sqlDate}: ${indexValue}`);
-                }
-              }
-            }
-          }
-          
-          console.log(`✓ Turkey housing price index: ${successCount} success, ${errorCount} errors`);
-          results.housingPriceIndex.success++;
-        } else {
-          console.log('⚠ No data returned from API');
+        if (data.length === 0) {
+          console.log(`⚠ ${city.name}: no data`);
           results.housingPriceIndex.failed++;
+          continue;
         }
+
+        const isCountry = city.slug === 'turkiye';
+        let cityId: string | null = null;
+        if (!isCountry) {
+          const { data: cityRow } = await supabase
+            .from('cities')
+            .select('id')
+            .eq('slug', city.slug)
+            .single();
+          cityId = cityRow?.id ?? null;
+          if (!cityId) {
+            console.log(`⚠ ${city.name}: city not found in DB`);
+            results.housingPriceIndex.failed++;
+            continue;
+          }
+        }
+
+        const seriesKey = city.evdsCode.replace(/\./g, '_');
+        let successCount = 0;
+        let errorCount = 0;
+
+        for (const point of data) {
+          const indexValue = parseFloat(point[seriesKey] || '0');
+          if (indexValue <= 0) continue;
+
+          const sqlDate = convertTCMBDateToSQL(point.Tarih);
+          const { error } = await supabase
+            .from('housing_price_index')
+            .upsert({
+              date: sqlDate,
+              city_id: cityId,
+              district_id: null,
+              location_type: isCountry ? 'country' : 'city',
+              index_value: indexValue,
+            }, {
+              onConflict: 'date,city_id,district_id,location_type',
+            });
+
+          if (error) {
+            const msg = typeof error.message === 'string' && error.message.length > 200
+              ? error.message.startsWith('<')
+                ? 'Supabase 502/5xx (HTML error page – retry later)'
+                : error.message.slice(0, 200) + '…'
+              : error.message;
+            console.error(`❌ ${city.name} ${sqlDate}:`, msg);
+            errorCount++;
+          } else {
+            successCount++;
+          }
+        }
+
+        console.log(`✓ ${city.name}: ${successCount} records`);
+        results.housingPriceIndex.success++;
+      } catch (error) {
+        console.error(`✗ ${city.name}:`, error);
+        results.housingPriceIndex.failed++;
       }
-    } catch (error) {
-      console.error(`✗ Failed to update Turkey housing index:`, error);
-      results.housingPriceIndex.failed++;
     }
 
     // 2. Konut Kredisi Faiz Oranlarını Çek ve Kaydet

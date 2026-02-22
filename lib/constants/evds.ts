@@ -1,18 +1,18 @@
-// TCMB EVDS API Seri Kodları ve Endpoint Bilgileri
-export const EVDS_BASE_URL = 'https://evds2.tcmb.gov.tr/service/evds';
+// TCMB EVDS API – EVDS3 kullanılıyor (igmevdsms-dis)
+export const EVDS_BASE_URL = 'https://evds3.tcmb.gov.tr/igmevdsms-dis/';
 
-// Konut Fiyat Endeksi Serileri
+// Konut Fiyat Endeksi Serileri (EVDS3: TP.KFE.TRxx, güncel ve şehir bazlı)
 export const HOUSING_PRICE_INDEX_SERIES = {
-  TURKEY: 'TP.HKFE01', // Türkiye Geneli
-  ISTANBUL: 'TP.HKFE01.IS',
-  ANKARA: 'TP.HKFE01.AN',
-  IZMIR: 'TP.HKFE01.IZ',
-  ANTALYA: 'TP.HKFE01.AT',
-  BURSA: 'TP.HKFE01.BR',
-  ADANA: 'TP.HKFE01.AD',
-  KONYA: 'TP.HKFE01.KO',
-  GAZIANTEP: 'TP.HKFE01.GA',
-  KOCAELI: 'TP.HKFE01.KC',
+  TURKEY: 'TP.KFE.TR',
+  ISTANBUL: 'TP.KFE.TR10',
+  ANKARA: 'TP.KFE.TR51',
+  IZMIR: 'TP.KFE.TR31',
+  ANTALYA: 'TP.KFE.TR61',
+  BURSA: 'TP.KFE.TR41',
+  ADANA: 'TP.KFE.TR62',   // Adana, Mersin
+  KONYA: 'TP.KFE.TR52',
+  GAZIANTEP: 'TP.KFE.TRC', // TRC bölgesi
+  KOCAELI: 'TP.KFE.TR42',  // Bolu, Kocaeli, Sakarya, Yalova, Düzce
 } as const;
 
 // Konut Kredisi Faiz Oranları

@@ -21,7 +21,7 @@ Türkiye gayrimenkul piyasasını TCMB resmi verileriyle analiz eden, otomatik v
 
 - Node.js 18+
 - Supabase hesabı
-- TCMB EVDS API key ([buradan alın](https://evds2.tcmb.gov.tr/))
+- TCMB EVDS API key ([EVDS 3'ten alın](https://evds3.tcmb.gov.tr/) — aynı key evds2 API ile çalışır)
 
 ### Kurulum
 
@@ -78,22 +78,24 @@ curl -X GET "https://your-domain.vercel.app/api/cron/sync-data" \
 
 ## 📊 Veri Kaynakları
 
-### TCMB EVDS API (Mevcut)
-- **Konut Fiyat Endeksi (KFE)**: `TP.HKFE01` - Türkiye geneli, 2010-2024 Mayıs
-- **Enflasyon (TÜFE)**: `TP.FG.J0` - 2005-2026 Ocak
-- **Güncelleme**: Aylık, otomatik cron job
+### TCMB EVDS (Production)
+- **EVDS 3** (evds3.tcmb.gov.tr): Yeni arayüz, Sürüm 1.1.0 — **demodan çıkmış, production**.
+- **Veri API**: Resmi veri hâlâ **evds2.tcmb.gov.tr/service/evds/** üzerinden; EVDS 3 arayüzü aynı backend’i kullanıyor.
+- **Konut Fiyat Endeksi (KFE)**: `TP.HKFE01` — Türkiye geneli, 2010–2024 Mayıs (45+ ay).
+- **Enflasyon (TÜFE)**: `TP.FG.J0` — 2005–2026 Ocak (60+ ay).
+- **Güncelleme**: Aylık, otomatik cron job.
 
 ### ⚠️ Bilinen Kısıtlar
 
-**Şehir Bazlı Veriler (ARŞİV)**
-- TCMB eski şehir kodlarını (TP.HKFE01.IS, TP.HKFE01.AN vb.) Mayıs 2024'ten sonra güncellemedi
-- Yeni bölge kodları (`TP_KFE_TR10-3`, `TP_KFE_TR51-3` vb.) EVDS 3 beta'da mevcut
-- **Durum**: EVDS 3 API key erişimi bekleniyor
+**Şehir / Bölge Bazlı KFE**
+- Eski seriler (TP.HKFE01.IS, .AN vb.) Mayıs 2024’ten sonra güncellenmiyor.
+- EVDS 3 arayüzünde yeni bölge serileri var (TR10 İstanbul, TR51 Ankara, TP_KFE_TR vb.); bunlar **evds2 API**’de aynı key ile erişilebilir olmayabilir.
+- **Yapılacak**: Gerekirse TCMB’den yeni serilere API erişimi talep edilebilir.
 
-**Çözüm Yol Haritası:**
-1. ✅ Türkiye geneli verisi çalışıyor (40+ ay)
-2. 🔄 EVDS 3 API erişimi için TCMB'ye başvuru (yakında)
-3. 💡 Alternatif: TÜİK Konut Satış İstatistikleri API entegrasyonu
+**Şu an çalışan:**
+1. ✅ Türkiye geneli KFE (40+ ay)
+2. ✅ Enflasyon (60+ ay)
+3. 💡 İleride: TÜİK Konut Satış İstatistikleri veya TCMB yeni seri erişimi
 
 ## 🏗️ Proje Yapısı
 

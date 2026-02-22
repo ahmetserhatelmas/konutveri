@@ -367,53 +367,6 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
           </CardContent>
         </Card>
 
-        {/* Setup Instructions */}
-        <div className="mt-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
-          <h3 className="text-xl font-bold text-purple-900 mb-4 flex items-center gap-2">
-            <Calendar className="w-6 h-6" />
-            Veri Çekimi İçin Gerekli Adımlar
-          </h3>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                1
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Deployment Tamamla</p>
-                <p className="text-gray-600">Vercel'e deploy et ve environment variables ekle</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                2
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Supabase Kur</p>
-                <p className="text-gray-600">supabase/schema.sql dosyasını Supabase'de çalıştır</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                3
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">İlk Veri Çekimi</p>
-                <code className="block mt-1 bg-gray-900 text-green-400 p-2 rounded text-xs overflow-x-auto">
-                  curl -X GET https://your-domain.vercel.app/api/cron/sync-data -H "Authorization: Bearer YOUR_CRON_SECRET"
-                </code>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs">
-                4
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Sayfayı Yenile</p>
-                <p className="text-gray-600">2-3 dakika sonra bu sayfayı yenile, grafikler aktif olacak!</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   );

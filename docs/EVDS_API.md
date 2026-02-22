@@ -2,6 +2,12 @@
 
 Bu doküman TCMB Elektronik Veri Dağıtım Sistemi (EVDS) API kullanımını açıklar.
 
+## EVDS 3 Durumu
+
+- **EVDS 3** (evds3.tcmb.gov.tr) **demodan çıkmış**, production (Sürüm EVDS3-1.1.0-9).
+- Veri **aynı kaynaktan**; arayüz yeni, backend aynı. API erişimi hâlâ **evds2.tcmb.gov.tr** üzerinden.
+- API anahtarını [EVDS 3](https://evds3.tcmb.gov.tr) üzerinden alabilirsin; aynı key evds2 endpoint’inde geçerli.
+
 ## 📡 API Temel Bilgiler
 
 **Base URL:** `https://evds2.tcmb.gov.tr/service/evds/`
@@ -17,8 +23,8 @@ key: YOUR_API_KEY
 
 ## 🔑 API Key Alma
 
-1. https://evds2.tcmb.gov.tr adresine kayıt ol
-2. Giriş yap > Profil > API ANAHTARI
+1. https://evds3.tcmb.gov.tr adresine kayıt ol / giriş yap
+2. Profil > API Anahtarı al (evds2 API ile uyumlu)
 
 ## 📊 Kullanılan Seri Kodları
 

@@ -17,7 +17,7 @@ class EVDSApiClient {
     
     this.client = axios.create({
       baseURL: EVDS_BASE_URL,
-      timeout: 30000,
+      timeout: 20000,
       headers: {
         'key': this.apiKey,
         'Content-Type': 'application/json',
@@ -41,8 +41,8 @@ class EVDSApiClient {
         ? params.series.join('-') 
         : params.series;
 
-      // TCMB EVDS API formatı: /service/evds/series=CODE&startDate=...
-      const url = `/series=${seriesCodes}` +
+      // EVDS3 formatı: igmevdsms-dis/series=CODE&startDate=... (başında / yok)
+      const url = `series=${seriesCodes}` +
         `&startDate=${params.startDate || DEFAULT_START_DATE}` +
         `&endDate=${params.endDate || formatDateForEVDS(new Date())}` +
         `&type=${DATA_FORMAT.JSON}` +
