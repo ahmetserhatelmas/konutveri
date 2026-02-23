@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const { startDate, endDate } = getDefaultDateRange();
     const data = await evdsApi.fetchHousingPriceIndex({
-      seriesCode: 'TP.HKFE01',
+      seriesCode: 'TP.KFE.TR',
       startDate,
       endDate,
     });

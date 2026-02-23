@@ -15,17 +15,33 @@ export const HOUSING_PRICE_INDEX_SERIES = {
   KOCAELI: 'TP.KFE.TR42',  // Bolu, Kocaeli, Sakarya, Yalova, Düzce
 } as const;
 
-// Konut Kredisi Faiz Oranları
+// Konut Kredisi Faiz Oranları (hesaplayıcı için – seri kodu EVDS3’te doğrulanmalı)
 export const LOAN_INTEREST_RATE_SERIES = {
-  HOUSING_LOAN_TRY: 'TP.FG.J0', // Not: KKKO.K07 çalışmıyor, FG.J0 enflasyon verisi kullanılıyor
-  COMMERCIAL_LOAN_TRY: 'TP.KTKO.K01', // TL Ticari Kredi Faiz Oranı
+  HOUSING_LOAN_TRY: 'TP.FG.J0', // yedek: enflasyon; aşağıdaki denenecek
+  COMMERCIAL_LOAN_TRY: 'TP.KTKO.K01',
 } as const;
+
+// Faiz serileri (EVDS3 “Kredi Faiz Oranları (Stok)” → Konut Kredisi (TL, Stok, %))
+// Hesaplayıcıda “güncel faiz” önerisi için sırayla denenecek
+export const INTEREST_RATE_SERIES_CANDIDATES = [
+  'TP.BKR.TRY.18',   // Konut Kredisi (TL, Stok, %) – EVDS3 tabloda TP_BKR_TRY_18
+  'TP.BIE.KT100H',   // Kredi Faiz Oranları (Stok) – olası kod
+  'TP.KKO.K01',      // Konut kredisi benzeri
+  'TP.RA',           // Reeskont ve Avans (TCMB)
+  'TP.APIFON4',      // Politika faizi / referans (yedek)
+] as const;
 
 // Tüketici Fiyat Endeksi (TÜFE)
 export const INFLATION_SERIES = {
   CPI_GENERAL: 'TP.FG.J0', // Genel TÜFE
   CPI_HOUSING: 'TP.FG04', // Konut TÜFE
   CPI_RENT: 'TP.FG0411', // Kira TÜFE
+} as const;
+
+// Yeni Kiracı Kira Endeksi (YKKE) – EVDS3 “Yeni Kiracı Kira Endeksi” (path: bie_ykke)
+// Seri kodu EVDS3 arayüzünde seri seçip Tablo Oluştur / API isteğinden doğrulanabilir
+export const RENT_INDEX_SERIES = {
+  TURKEY: 'TP.BIE.YKKE',
 } as const;
 
 // Döviz Kurları

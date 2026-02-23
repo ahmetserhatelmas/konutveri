@@ -49,8 +49,8 @@ export default function CalculatorPage() {
           </h3>
           <ul className="space-y-2 text-sm text-blue-800">
             <li>• Aylık kredi taksiti PMT formülü ile hesaplanır</li>
-            <li>• Kira için yıllık %10 artış varsayılır (TÜFE kira endeksi ortalaması)</li>
-            <li>• Kredi için sabit faiz oranı varsayılır</li>
+            <li>• Kira için yıllık %10 artış örnek olarak varsayılır (güncel TÜFE kira endeksi kullanılmıyor)</li>
+            <li>• Kredi faiz oranı TCMB EVDS “Konut Kredisi (TL, Stok, %)” serisinden güncel alınır; isteğe göre düzenlenebilir</li>
             <li>• Toplam maliyetlere peşinat dahildir</li>
             <li>• Vergi, sigorta, bakım masrafları ayrı hesaplanmalıdır</li>
           </ul>

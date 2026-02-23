@@ -14,15 +14,12 @@ interface PageProps {
   }>;
 }
 
-export function generateStaticParams() {
-  return MAJOR_CITIES.map((city) => ({
-    city: city.slug,
-  }));
-}
+export const dynamic = 'force-dynamic';
 
 export default async function CityAnalyticsPage({ params }: PageProps) {
   const { city: citySlug } = await params;
-  const city = MAJOR_CITIES.find((c) => c.slug === citySlug);
+  const slug = (citySlug ?? '').toLowerCase();
+  const city = MAJOR_CITIES.find((c) => c.slug === slug);
 
   if (!city) {
     notFound();
@@ -35,11 +32,11 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
 
   if (supabase) {
     // Önce şehre özel veri deneyelim
-    if (citySlug !== 'turkiye') {
+    if (slug !== 'turkiye') {
       const { data: cityData } = await supabase
         .from('cities')
         .select('id')
-        .eq('slug', citySlug)
+        .eq('slug', slug)
         .single();
 
       if (cityData) {
@@ -67,7 +64,7 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
         .order('date', { ascending: true });
 
       console.log('Supabase query result:', { 
-        citySlug,
+        citySlug: slug,
         dataCount: data?.length, 
         error: error?.message,
         firstItem: data?.[0],
@@ -77,20 +74,24 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
       if (data && data.length > 0) {
         housingData = data;
         hasData = true;
-        isCountryData = citySlug !== 'turkiye'; // Şehir için ülke verisi kullanılıyor mu?
+        isCountryData = slug !== 'turkiye'; // Şehir için ülke verisi kullanılıyor mu?
       }
     }
   }
 
-  // İstatistikleri hesapla
+  // İstatistikleri hesapla (veri aylık geliyor; TCMB KFE çeyreklik güncellenir)
   const latestData = housingData[housingData.length - 1];
-  const previousMonthData = housingData[housingData.length - 2];
-  const yearAgoData = housingData[housingData.length - 13]; // 12 ay önce
+  const previousMonthData = housingData.length >= 2 ? housingData[housingData.length - 2] : null;
+  const threeMonthsAgoData = housingData.length >= 4 ? housingData[housingData.length - 4] : null;
+  const yearAgoData = housingData[housingData.length - 13];
 
   const currentIndex = latestData?.index_value || 215.8;
-  const monthlyChange = previousMonthData 
-    ? ((currentIndex - previousMonthData.index_value) / previousMonthData.index_value * 100) 
-    : 2.3;
+  const monthlyChange = previousMonthData
+    ? ((currentIndex - previousMonthData.index_value) / previousMonthData.index_value * 100)
+    : 0;
+  const quarterlyChange = threeMonthsAgoData 
+    ? ((currentIndex - threeMonthsAgoData.index_value) / threeMonthsAgoData.index_value * 100) 
+    : 0;
   const yearlyChange = yearAgoData
     ? ((currentIndex - yearAgoData.index_value) / yearAgoData.index_value * 100)
     : 28.5;
@@ -217,9 +218,9 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
           <StatCard
             title="Konut Fiyat Endeksi"
             value={currentIndex.toFixed(1)}
-            change={monthlyChange}
-            changeLabel="aylık"
-            trend={monthlyChange >= 0 ? 'up' : 'down'}
+            change={quarterlyChange}
+            changeLabel="3 aylık"
+            trend={quarterlyChange >= 0 ? 'up' : 'down'}
             icon={<Home className="w-5 h-5" />}
           />
           <StatCard
@@ -302,6 +303,13 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
                   %{Math.abs(monthlyChange).toFixed(1)}
                 </span>
               </div>
+              <div className="flex items-center justify-between py-2 border-b">
+                <span className="text-gray-600">3 Aylık Değişim</span>
+                <span className={`font-semibold flex items-center gap-1 ${quarterlyChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {quarterlyChange >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                  %{Math.abs(quarterlyChange).toFixed(1)}
+                </span>
+              </div>
               <div className="flex items-center justify-between py-2">
                 <span className="text-gray-600">Yıllık Değişim</span>
                 <span className={`font-semibold flex items-center gap-1 ${yearlyChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -322,12 +330,14 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
                 konut fiyatlarının genel seviyesini gösterir.
               </p>
               <p>
-                <strong>2023 yılı baz alınarak (100)</strong> hesaplanır. Örneğin 
-                215.8 değeri, fiyatların 2023'e göre %115.8 arttığını gösterir.
+                <strong>Baz yıl 2023</strong>, TCMB'nin bu seriyi yayımlarken kullandığı resmi bazdır (100 = 2023 ortalaması). 
+                Örneğin 215.8 değeri, fiyatların 2023'e göre %115.8 arttığını gösterir.
               </p>
               <p>
-                <strong>Aylık ve yıllık değişim oranları</strong> ile piyasanın 
-                yükseliş veya düşüş trendini takip edebilirsiniz.
+                <strong>Aylık, 3 aylık ve yıllık değişim oranları</strong> ile piyasanın 
+                yükseliş veya düşüş trendini takip edebilirsiniz. TCMB Konut Fiyat Endeksi 
+                serisi çeyreklik güncellendiği için <strong>aylık değişim çoğu ay %0</strong> görünebilir; 
+                anlamlı kısa vadeli değişim için <strong>3 aylık değişime</strong> bakın.
               </p>
             </CardContent>
           </Card>

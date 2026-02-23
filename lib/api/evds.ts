@@ -124,6 +124,22 @@ class EVDSApiClient {
   }
 
   /**
+   * Yeni Kiracı Kira Endeksi (YKKE) verilerini çek
+   */
+  async fetchRentIndex(params: {
+    seriesCode: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<EVDSDataPoint[]> {
+    return this.fetchData({
+      series: params.seriesCode,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      frequency: FREQUENCY.MONTHLY,
+    });
+  }
+
+  /**
    * Döviz kuru verilerini çek
    */
   async fetchExchangeRates(params: {
