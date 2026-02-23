@@ -52,7 +52,7 @@ export function RentVsMortgageCalculator() {
   };
 
   // 0 değerini boş göster ki kullanıcı silince "0" kalmasın, yeni rakam yanına eklenmesin
-  const showNum = (n: number) => (n === 0 ? '' : n);
+  const showNum = (n: number | undefined) => (n === 0 || n == null ? '' : n);
 
   const getRecommendationText = (recommendation: string) => {
     switch (recommendation) {

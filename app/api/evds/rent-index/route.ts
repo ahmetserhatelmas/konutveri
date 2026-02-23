@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
     });
   };
 
-  // Önce YKKE dene
-  let seriesCode = RENT_INDEX_SERIES.TURKEY;
+  // Önce YKKE dene; fallback’te TÜFE Kira atanabileceği için string
+  let seriesCode: string = RENT_INDEX_SERIES.TURKEY;
   let response: Awaited<ReturnType<typeof trySeries>>;
 
   try {
