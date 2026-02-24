@@ -149,11 +149,18 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
                 {city.region} Bölgesi - Konut Piyasası Analizi
               </p>
             </div>
-            <Link href="/analytics">
-              <Button variant="outline" className="bg-white text-blue-600 hover:bg-blue-50">
-                Tüm Şehirler
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href={`/analytics/${slug}/report`}>
+                <Button className="bg-white text-blue-600 hover:bg-blue-50 border border-white/30">
+                  Rapor al
+                </Button>
+              </Link>
+              <Link href="/analytics">
+                <Button variant="outline" className="bg-white text-blue-600 hover:bg-blue-50">
+                  Tüm Şehirler
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -185,12 +192,12 @@ export default async function CityAnalyticsPage({ params }: PageProps) {
               <Building2 className="w-5 h-5 text-blue-600 mr-3" />
               <div>
                 <p className="font-medium text-blue-900">
-                  {city.name} İçin Şehir Bazlı Veri Bulunmuyor
+                  {city.name} için bölge verisi henüz yüklenmedi
                 </p>
                 <p className="text-sm text-blue-700 mt-1">
-                  TCMB şehir bazlı konut fiyat endeksi verilerini Mayıs 2024'ten itibaren yayınlamıyor. 
-                  Aşağıda <strong>Türkiye geneli verileri</strong> görüntülenmektedir. 
-                  Şehir bazlı veriler için alternatif kaynaklar araştırılıyor.
+                  Bu bölge TCMB EVDS’te mevcut ({city.evdsCode}), ancak veritabanında henüz kayıt yok. 
+                  Cron job çalıştığında bölge verisi çekilecek ve burada görünecektir. 
+                  Şu an aşağıda <strong>Türkiye geneli</strong> verileri gösterilmektedir.
                 </p>
               </div>
             </div>

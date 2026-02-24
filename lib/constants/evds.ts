@@ -1,18 +1,28 @@
 // TCMB EVDS API – EVDS3 kullanılıyor (igmevdsms-dis)
 export const EVDS_BASE_URL = 'https://evds3.tcmb.gov.tr/igmevdsms-dis/';
 
-// Konut Fiyat Endeksi Serileri (EVDS3: TP.KFE.TRxx, güncel ve şehir bazlı)
+// Konut Fiyat Endeksi Serileri (EVDS3: TP.KFE.TRxx – bölge bazlı, aynı kod = aynı veri)
 export const HOUSING_PRICE_INDEX_SERIES = {
   TURKEY: 'TP.KFE.TR',
-  ISTANBUL: 'TP.KFE.TR10',
-  ANKARA: 'TP.KFE.TR51',
-  IZMIR: 'TP.KFE.TR31',
-  ANTALYA: 'TP.KFE.TR61',
-  BURSA: 'TP.KFE.TR41',
-  ADANA: 'TP.KFE.TR62',   // Adana, Mersin
-  KONYA: 'TP.KFE.TR52',
-  GAZIANTEP: 'TP.KFE.TRC', // TRC bölgesi
-  KOCAELI: 'TP.KFE.TR42',  // Bolu, Kocaeli, Sakarya, Yalova, Düzce
+  TR10: 'TP.KFE.TR10',   // İstanbul
+  TR21: 'TP.KFE.TR21',   // Edirne, Kırklareli, Tekirdağ
+  TR22: 'TP.KFE.TR22',   // Balıkesir, Çanakkale
+  TR31: 'TP.KFE.TR31',   // İzmir
+  TR32: 'TP.KFE.TR32',   // Aydın, Denizli, Muğla
+  TR33: 'TP.KFE.TR33',   // Afyonkarahisar, Kütahya, Manisa, Uşak
+  TR41: 'TP.KFE.TR41',   // Bursa, Eskişehir, Bilecik
+  TR42: 'TP.KFE.TR42',   // Bolu, Kocaeli, Sakarya, Yalova, Düzce
+  TR51: 'TP.KFE.TR51',   // Ankara
+  TR52: 'TP.KFE.TR52',   // Konya, Karaman
+  TR61: 'TP.KFE.TR61',   // Antalya, Burdur, Isparta
+  TR62: 'TP.KFE.TR62',   // Adana, Mersin
+  TR63: 'TP.KFE.TR63',   // Hatay, Kahramanmaraş, Osmaniye
+  TR7: 'TP.KFE.TR7',     // Nevşehir, Niğde, Kırıkkale, Kırşehir, Aksaray, Kayseri, Sivas, Yozgat
+  TR8: 'TP.KFE.TR8',     // Zonguldak, Karabük, Bartın, Kastamonu, Çankırı, Sinop, Samsun, Tokat, Çorum, Amasya
+  TR9: 'TP.KFE.TR9',     // Trabzon, Ordu, Giresun, Rize, Artvin, Gümüşhane
+  TRA: 'TP.KFE.TRA',     // Erzurum, Erzincan, Bayburt, Ağrı, Kars, Iğdır, Ardahan
+  TRB: 'TP.KFE.TRB',     // Malatya, Elazığ, Bingöl, Tunceli, Van, Muş, Bitlis, Hakkari
+  TRC: 'TP.KFE.TRC',     // Gaziantep, Adıyaman, Kilis, Şanlıurfa, Diyarbakır, Mardin, Batman, Şırnak, Siirt
 } as const;
 
 // Konut Kredisi Faiz Oranları (hesaplayıcı için – seri kodu EVDS3’te doğrulanmalı)

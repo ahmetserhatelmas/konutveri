@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Rapor sayfası yazdırma / PDF */
+@media print {
+  .report-container header .print\:hidden,
+  .report-container .print\:hidden {
+    display: none !important;
+  }
+  .report-container {
+    background: #fff;
+  }
+  .report-container main {
+    padding-top: 0.5rem;
+  }
+}

@@ -128,7 +128,7 @@ export async function GET(request: NextRequest) {
               location_type: isCountry ? 'country' : 'city',
               index_value: indexValue,
             }, {
-              onConflict: 'date,city_id,district_id,location_type',
+              onConflict: 'conflict_key',
             });
 
           if (error) {
